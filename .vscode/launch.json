@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "lldb",
+        "request": "launch",
+        "name": "Cargo launch",
+        "cargo": {
+            "args": [
+              "build",
+              "--bin=pocshm",
+              "--package=pocshm"
+            ],
+            "filter": {
+              "name": "pocshm",
+              "kind": "bin"
+            },
+        },
+        "args": []
+      },
+        {
+            "name": "Debug pocshm (nvim - codelldb)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "./target/debug/pocshm",
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": false,
+            "args": [ ]
+        },
+    ]
+}

@@ -1,0 +1,23 @@
+# this will not work, as the containers need to run interactively
+# but it is still useful to see how to set up the containers and
+# to build the image with the correct name
+x-service-templates:
+  pocshm: &pocshm
+    image: pocshm
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+
+services:
+  pocshm_leader:
+    <<: *pocshm
+    container_name: pocshm_leader
+    ipc: shareable
+  pocshm_follower:
+    <<: *pocshm
+    container_name: pocshm_follower
+    ipc: 'service:pocshm_leader'
+    depends_on:
+      - pocshm_leader
