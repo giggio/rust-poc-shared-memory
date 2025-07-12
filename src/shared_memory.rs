@@ -44,6 +44,14 @@ impl<T> SharedMemory<T> where T: Default + Copy {
         sleep(Duration::from_secs(1)); // Hold lock for a second
         Ok(())
     }
+
+    pub fn set_fn<F: Fn(&mut T) -> T>(&self, update: F) -> Result<T, String> {
+        let guard = self.mutex.lock().map_err(|e| format!("Failed to acquire lock: {}", e))?;
+        let val = unsafe { &mut *(*guard as *mut u8 as *mut T) };
+        let value = update(val);
+        sleep(Duration::from_secs(3)); // Hold lock for a second
+        Ok(value)
+    }
 }
 
 

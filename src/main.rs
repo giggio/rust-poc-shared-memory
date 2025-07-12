@@ -26,6 +26,10 @@ fn run() -> Result<(), String> {
             println!("Using struct...");
             use_struct()?;
         }
+        "inc" => {
+            println!("Incrementing...");
+            use_u8_inc()?;
+        }
         "isinit" => {
             println!("Checking initialization...");
             is_initialized();
@@ -136,6 +140,30 @@ fn use_u8() -> Result<(), String> {
         let current_value = shm.get();
         println!("Previous value: {}", current_value);
         shm.set(value)?;
+    }
+    Ok(())
+}
+
+fn use_u8_inc() -> Result<(), String> {
+    let shm = SharedMemory::<u8>::new(LINK_FILE_NAME)?;
+    let current_value = shm.get();
+    println!("Initial value in shared memory: {}", current_value);
+    loop {
+        let mut input = String::new();
+        println!("Press enter, type q to quit: ");
+        io::stdin().read_line(&mut input).expect("Failed to read line");
+        let input = input.trim();
+        if input == "q" {
+            println!("Exiting...");
+            break;
+        }
+        let current_value = shm.get();
+        println!("Previous value: {current_value}");
+        let new_value = shm.set_fn(|p| {
+            *p = *p + 1;
+            *p
+        })?;
+        println!("New value: {new_value}");
     }
     Ok(())
 }
